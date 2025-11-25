@@ -1,0 +1,26 @@
+name: Deploy to GitHub Pages
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./ # Убедитесь, что ваши HTML файлы находятся в корне репозитория
+          publish_branch: gh-pages
+          user_name: "Your Name"
+          user_email: "your-email@example.com"
+
+      - name: Deploy site to GitHub Pages
+        run: |
+          echo "Deploying to GitHub Pages"
