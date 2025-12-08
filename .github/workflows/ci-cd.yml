@@ -31,12 +31,12 @@ jobs:
         run: |
           # Создаем новую папку для версии
           mkdir "$new_version"
-      
+
       - name: Copy files to the new version directory
         run: |
-          # Копируем все файлы в новую папку
-          cp -r * "$new_version/"
-      
+          # Копируем все файлы в новую папку, исключая текущую папку версии
+          find . -mindepth 1 -maxdepth 1 ! -name "$new_version" -exec cp -r {} "$new_version/" \;
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
