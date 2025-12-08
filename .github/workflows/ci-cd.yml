@@ -3,11 +3,12 @@ name: Deploy to GitHub Pages
 on:
   push:
     tags:
-      - 'v*'  # Будет срабатывать только на пуш тегов (например, v1, v2)
+      - 'v*'  # Будет срабатывать только на пуш тегов, например, v1, v2
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -16,9 +17,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./ # Публикация из текущей директории
+          publish_dir: ./  # Публикация из текущей директории
           publish_branch: gh-pages
           user_name: "Your Name"
           user_email: "your-email@example.com"
-          # Публикуем в папку с названием версии
-          destination_dir: v${{ github.ref_name }} # Сохраняем в папку /v1, /v2 и т.д.
+          destination_dir: "v${{ github.ref_name }}"  # Сохраняем в папку /v1, /v2 и т.д.
