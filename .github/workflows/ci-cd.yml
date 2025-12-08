@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.ACTIONS_DEPLOY_TOKEN }}  # Используем персональный токен
           publish_dir: ./$new_version  # Публикуем в новую папку
           publish_branch: gh-pages
           user_name: "Your Name"
