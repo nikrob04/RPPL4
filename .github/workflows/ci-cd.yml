@@ -1,9 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages with Versioning
 
 on:
   push:
     tags:
-      - 'v*'  # Будет срабатывать только на пуш тегов, например, v1, v2
+      - 'v*'  # Триггер на пуш тегов, например, v1, v2, v3
 
 jobs:
   deploy:
@@ -13,12 +13,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up GitHub Pages
+      - name: Get the latest version
+        id: version
+        run: |
+          # Получаем список папок с версиями, например, v1, v2, v3
+          version=$(ls -d */ | grep -E "^v[0-9]+$" | sort -V | tail -n 1)
+          # Если версия найдена, извлекаем номер версии, иначе начинаем с v1
+          if [ -z "$version" ]; then
+            new_version="v1"
+          else
+            latest_version=$(echo $version | sed 's/v//')
+            new_version="v$((latest_version + 1))"
+          fi
+          echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Create version directory
+        run: |
+          # Создаем новую папку для версии
+          mkdir "$new_version"
+      
+      - name: Copy files to the new version directory
+        run: |
+          # Копируем все файлы в новую папку
+          cp -r * "$new_version/"
+      
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # Публикация из текущей директории
+          publish_dir: ./$new_version  # Публикуем в новую папку
           publish_branch: gh-pages
           user_name: "Your Name"
           user_email: "your-email@example.com"
-          destination_dir: "v${{ github.ref_name }}"  # Публикация в папку с версией, например, /v1
